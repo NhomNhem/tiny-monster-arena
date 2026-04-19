@@ -1,0 +1,22 @@
+.container {
+    padding: 10px;
+}
+
+.title {
+    font-size: 16px;
+    unity-font-style: bold;
+    margin-bottom: 10px;
+}
+
+.step-list {
+    height: 200px;
+    margin-bottom: 10px;
+}
+
+.log-view {
+    height: 150px;
+    background-color: #1e1e1e;
+    color: #00ff88;
+    margin-top: 10px;
+    padding: 5px;
+}
