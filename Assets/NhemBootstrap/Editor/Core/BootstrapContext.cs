@@ -5,6 +5,7 @@ namespace NhemBootStrap.Editor.Core {
     public class BootstrapContext {
         public string ProjectPath;
         public string ProjectName;
+        public bool ForceUpdateAsmdef = false;
         public readonly List<string> Logs = new();
         
         public void Log(string message) {

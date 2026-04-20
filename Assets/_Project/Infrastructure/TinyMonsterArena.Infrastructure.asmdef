@@ -1,0 +1,9 @@
+{
+  "name": "TinyMonsterArena.Infrastructure",
+  "rootNamespace": "TinyMonsterArena.Infrastructure",
+  "references": [
+    "UniTask",
+    "Unity.InputSystem"
+  ],
+  "autoReferenced": false
+}

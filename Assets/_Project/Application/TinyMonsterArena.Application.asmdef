@@ -1,0 +1,8 @@
+{
+  "name": "TinyMonsterArena.Application",
+  "rootNamespace": "TinyMonsterArena.Application",
+  "references": [
+    "UniTask"
+  ],
+  "autoReferenced": false
+}

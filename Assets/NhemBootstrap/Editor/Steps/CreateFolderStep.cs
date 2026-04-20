@@ -7,9 +7,38 @@ namespace NhemBootstrap.Editor.Steps {
         public string Name => "Setup Clean Architecture Folders";
 
         public bool CheckCompleted() {
-            return AssetDatabase.IsValidFolder("Assets/_Project/Domain")
-                   && AssetDatabase.IsValidFolder("Assets/_Project/Application")
-                   && AssetDatabase.IsValidFolder("Assets/_Project/Infrastructure");
+            bool domainValid = AssetDatabase.IsValidFolder("Assets/_Project/Domain");
+            bool appValid = AssetDatabase.IsValidFolder("Assets/_Project/Application");
+            bool infraValid = AssetDatabase.IsValidFolder("Assets/_Project/Infrastructure");
+            bool result = domainValid && appValid && infraValid;
+            
+            UnityEngine.Debug.Log($"[CreateFolderStep] CheckCompleted: Domain={domainValid}, Application={appValid}, Infrastructure={infraValid} => {result}");
+            
+            // Also log each individual folder check for debugging
+            string[] foldersToCheck = {
+                "Assets/_Project",
+                "Assets/_Project/Domain",
+                "Assets/_Project/Domain/Entities",
+                "Assets/_Project/Domain/ValueObjects",
+                "Assets/_Project/Domain/Repositories",
+                "Assets/_Project/Application",
+                "Assets/_Project/Application/UseCases",
+                "Assets/_Project/Application/Services",
+                "Assets/_Project/Application/Messages",
+                "Assets/_Project/Infrastructure",
+                "Assets/_Project/Infrastructure/Network",
+                "Assets/_Project/Infrastructure/Network/Fishnet",
+                "Assets/_Project/Infrastructure/Physics",
+                "Assets/_Project/Infrastructure/Input",
+                "Assets/_Project/Infrastructure/Logging"
+            };
+            
+            foreach (string folder in foldersToCheck) {
+                bool exists = AssetDatabase.IsValidFolder(folder);
+                UnityEngine.Debug.Log($"[CreateFolderStep] Folder check: {folder} = {exists}");
+            }
+            
+            return result;
         }
 
         public void Execute(BootstrapContext context) {
@@ -85,7 +114,7 @@ namespace NhemBootstrap.Editor.Steps {
             string parent = Path.GetDirectoryName(path)?.Replace("\\", "/");
             string name = Path.GetFileName(path);
 
-            if (!AssetDatabase.IsValidFolder(parent))
+            if (!string.IsNullOrEmpty(parent) && parent != "Assets" && !AssetDatabase.IsValidFolder(parent))
                 MakeFolder(parent);
 
             AssetDatabase.CreateFolder(parent, name);

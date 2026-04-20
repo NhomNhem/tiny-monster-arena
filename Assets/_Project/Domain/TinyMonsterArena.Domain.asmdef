@@ -1,0 +1,6 @@
+{
+  "name": "TinyMonsterArena.Domain",
+  "rootNamespace": "TinyMonsterArena.Domain",
+  "references": [],
+  "autoReferenced": false
+}

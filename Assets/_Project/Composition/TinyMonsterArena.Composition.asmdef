@@ -1,0 +1,8 @@
+{
+  "name": "TinyMonsterArena.Composition",
+  "rootNamespace": "TinyMonsterArena.Composition",
+  "references": [
+    "VContainer"
+  ],
+  "autoReferenced": false
+}

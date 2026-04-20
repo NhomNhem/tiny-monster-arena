@@ -1,43 +1,64 @@
 ﻿using System.Collections.Generic;
 using NhemBootStrap.Editor.Core;
 using UnityEditor.PackageManager;
+using System.Diagnostics;
+using System.Linq;
 
 namespace NhemBootstrap.Editor.Steps {
     public class InstallPackageStep : IBootstrapStep {
-        public string Name => "Install Package";
-        private readonly List<string> _packages;
-        
-        public InstallPackageStep(List<string> packages) {
-            _packages = packages;
+        public string Name => "Install Packages";
+        public List<PackageInfoViewModel> Packages { get; } = new();
+
+        public InstallPackageStep(List<string> packageNames) {
+            foreach (var name in packageNames) {
+                Packages.Add(new PackageInfoViewModel { Name = name, Selected = true });
+            }
         }
 
         public bool CheckCompleted() {
-            var listRequest = Client.List(true);
-            while (!listRequest.IsCompleted) { }
-            
-            if (listRequest.Status != StatusCode.Success) {
-                return false;
-            }
+            var installed = GetInstalledPackages();
+            if (installed == null) return false;
 
-            var installedPackages = new HashSet<string>();
-            foreach (var package in listRequest.Result) {
-                installedPackages.Add(package.name);
-            }
-
-            foreach (var package in _packages) {
-                if (!installedPackages.Contains(package)) {
-                    return false;
+            bool allSelectedCompleted = true;
+            foreach (var p in Packages) {
+                p.IsInstalled = installed.Contains(p.Name);
+                if (p.Selected && !p.IsInstalled) {
+                    allSelectedCompleted = false;
                 }
             }
 
-            return true;
+            return allSelectedCompleted;
         }
 
         public void Execute(BootstrapContext context) {
-            foreach (var package in _packages) {
-                Client.Add(package);
-                context.Log($"Installing package: {package}");
-            }    
+            var installed = GetInstalledPackages();
+            
+            foreach (var p in Packages) {
+                if (p.Selected && (installed == null || !installed.Contains(p.Name))) {
+                    Client.Add(p.Name);
+                    context.Log($"Installing package: {p.Name}");
+                }
+            }
         }
+
+        private HashSet<string> GetInstalledPackages() {
+            var listRequest = Client.List(true);
+            float timeout = 5f;
+            var stopwatch = Stopwatch.StartNew();
+            while (!listRequest.IsCompleted) {
+                if (stopwatch.Elapsed.TotalSeconds > timeout) return null;
+                System.Threading.Thread.Sleep(10);
+            }
+
+            if (listRequest.Status != StatusCode.Success) return null;
+
+            return new HashSet<string>(listRequest.Result.Select(p => p.name));
+        }
+    }
+
+    public class PackageInfoViewModel {
+        public string Name;
+        public bool Selected;
+        public bool IsInstalled;
     }
 }

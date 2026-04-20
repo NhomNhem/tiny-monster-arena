@@ -1,0 +1,9 @@
+{
+  "name": "TinyMonsterArena.Shared",
+  "rootNamespace": "TinyMonsterArena.Shared",
+  "references": [
+    "UniTask",
+    "R3.Unity"
+  ],
+  "autoReferenced": false
+}

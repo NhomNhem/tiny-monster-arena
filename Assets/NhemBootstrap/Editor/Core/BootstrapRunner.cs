@@ -9,12 +9,26 @@ namespace NhemBootStrap.Editor.Core {
         }
 
         public void Run(BootstrapContext context) {
+            bool allSucceeded = true;
+            
             foreach (var step in _steps) {
-                context.Log($"▶ Running: {step.Name}");
-                step.Execute(context);
+                try {
+                    context.Log($"▶ Running: {step.Name}");
+                    step.Execute(context);
+                }
+                catch (System.Exception ex) {
+                    context.Log($"❌ Failed: {step.Name} - {ex.Message}");
+                    allSucceeded = false;
+                    // Continue with other steps even if one fails
+                }
             }
 
-            context.Log("✅ Bootstrap Completed");
+            if (allSucceeded) {
+                context.Log("✅ Bootstrap Completed");
+            }
+            else {
+                context.Log("⚠️ Bootstrap Completed with Errors");
+            }
         }
     }
 }

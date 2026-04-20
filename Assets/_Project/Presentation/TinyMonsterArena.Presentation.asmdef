@@ -1,0 +1,9 @@
+{
+  "name": "TinyMonsterArena.Presentation",
+  "rootNamespace": "TinyMonsterArena.Presentation",
+  "references": [
+    "R3.Unity",
+    "UniTask"
+  ],
+  "autoReferenced": false
+}
