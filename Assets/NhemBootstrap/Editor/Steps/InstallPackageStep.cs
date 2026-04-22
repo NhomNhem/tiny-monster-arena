@@ -41,7 +41,7 @@ namespace NhemBootstrap.Editor.Steps {
             }
         }
 
-        private HashSet<string> GetInstalledPackages() {
+        public HashSet<string> GetInstalledPackages() {
             var listRequest = Client.List(true);
             float timeout = 5f;
             var stopwatch = Stopwatch.StartNew();

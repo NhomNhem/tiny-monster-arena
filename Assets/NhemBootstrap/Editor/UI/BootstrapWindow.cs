@@ -39,13 +39,15 @@ namespace NhemBootstrap.Editor {
             _log = new ScrollView();
             
             var refreshBtn = new Button(OnRefreshClick) { text = "Refresh Status" };
-            var runBtn = new Button(Run) { text = "Apply Changes / Fix" };
+            var fixAsmdefBtn = new Button(FixAsmdefs) { text = "Fix / Update Asmdefs Only" };
+            var runBtn = new Button(Run) { text = "Apply Selected Steps" };
             
             root.Add(nameField);
             root.Add(forceToggle);
             root.Add(_list);
             root.Add(_progress);
             root.Add(refreshBtn);
+            root.Add(fixAsmdefBtn);
             root.Add(runBtn);
             root.Add(_log);
             
@@ -74,7 +76,7 @@ namespace NhemBootstrap.Editor {
                 Create(new InstallPackageStep(packages))
             };
             
-            // Auto-select uninstalled packages on init
+            // Auto-select uninstalled packages ONLY on initial window creation
             foreach (var vm in _steps) {
                 if (vm.Step is InstallPackageStep packageStep) {
                     foreach (var pkg in packageStep.Packages) {
@@ -97,17 +99,14 @@ namespace NhemBootstrap.Editor {
         void OnRefreshClick() {
             foreach (var vm in _steps) {
                 vm.Completed = vm.Step.CheckCompleted();
-                // Special for GenerateAsmdefStep: if force is on, it's never "completed" (needs fix)
-                if (vm.Step is GenerateAsmdefStep && _forceUpdateAsmdef) {
-                    vm.Completed = false;
-                }
-                
                 vm.Enabled = !vm.Completed;
                 
-                // Auto-select uninstalled packages on refresh
+                // Refresh installation status without overwriting user selection
                 if (vm.Step is InstallPackageStep packageStep) {
+                    var installed = packageStep.GetInstalledPackages();
                     foreach (var pkg in packageStep.Packages) {
-                        if (!pkg.IsInstalled) pkg.Selected = true;
+                        pkg.IsInstalled = installed != null && installed.Contains(pkg.Name);
+                        // Do NOT change pkg.Selected here to respect user choice
                     }
                 }
             }
@@ -164,6 +163,19 @@ namespace NhemBootstrap.Editor {
 
                 _list.Add(row);
             }
+        }
+
+        void FixAsmdefs() {
+            var ctx = new BootstrapContext { 
+                ProjectName = _projectName,
+                ForceUpdateAsmdef = true // Always force when clicking this button
+            };
+            
+            Log("Force updating Asmdefs...");
+            var step = new GenerateAsmdefStep();
+            step.Execute(ctx);
+            Log("Asmdefs updated.");
+            OnRefreshClick();
         }
 
         void Run() {

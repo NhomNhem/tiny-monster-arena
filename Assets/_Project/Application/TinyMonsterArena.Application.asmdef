@@ -2,7 +2,9 @@
   "name": "TinyMonsterArena.Application",
   "rootNamespace": "TinyMonsterArena.Application",
   "references": [
-    "UniTask"
+    "TinyMonsterArena.Domain",
+    "UniTask",
+    "TinyMonsterArena.Shared"
   ],
   "autoReferenced": false
 }

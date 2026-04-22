@@ -1,9 +1,26 @@
 {
-  "name": "TinyMonsterArena.Infrastructure",
-  "rootNamespace": "TinyMonsterArena.Infrastructure",
-  "references": [
-    "UniTask",
-    "Unity.InputSystem"
-  ],
-  "autoReferenced": false
+    "name": "TinyMonsterArena.Infrastructure",
+    "rootNamespace": "TinyMonsterArena.Infrastructure",
+    "references": [
+        "TinyMonsterArena.Domain",
+        "TinyMonsterArena.Application",
+        "TinyMonsterArena.Shared",
+        "UniTask",
+        "Unity.InputSystem",
+        "TinyMonsterArena.Presentation",
+        "Fusion.Addons.FSM.Editor",
+        "Fusion.Addons.KCC",
+        "Fusion.Addons.FSM",
+        "VContainer",
+        "Fusion.Unity"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

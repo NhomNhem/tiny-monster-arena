@@ -1,9 +1,19 @@
 {
-  "name": "TinyMonsterArena.Shared",
-  "rootNamespace": "TinyMonsterArena.Shared",
-  "references": [
-    "UniTask",
-    "R3.Unity"
-  ],
-  "autoReferenced": false
+    "name": "TinyMonsterArena.Shared",
+    "rootNamespace": "TinyMonsterArena.Shared",
+    "references": [
+        "UniTask",
+        "R3.Unity",
+        "Unity.InputSystem.ForUI",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
