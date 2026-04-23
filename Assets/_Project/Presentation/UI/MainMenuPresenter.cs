@@ -1,36 +1,55 @@
-﻿using Fusion;
+using System;
+using Fusion;
 using R3;
 using TinyMonsterArena.Application.Services.Interfaces;
-using UnityEngine;
 using UnityEngine.UIElements;
-using VContainer;
+using VContainer.Unity;
 
 namespace TinyMonsterArena.Presentation.UI {
-    [RequireComponent(typeof(UIDocument))]
-    public class MainMenuPresenter : MonoBehaviour {
-        [Inject] private readonly INetworkService _networkService;
-
-        private VisualElement _root;
-        private Button _btnJoin;
+    public class MainMenuPresenter : IStartable, IDisposable {
+        private readonly INetworkService _networkService;
+        private readonly UIDocument _uiDocument;
         private readonly CompositeDisposable _disposables = new();
 
-        // TUYỆT ĐỐI không dùng OnEnable để truy cập Service được Inject
-        private void Start() {
-            _root = GetComponent<UIDocument>().rootVisualElement;
-            _btnJoin = _root.Q<Button>("btn-join");
+        private Button _btnJoin;
 
-            if (_networkService == null) {
-                Debug.LogError("VContainer: INetworkService chưa được Inject vào MainMenuPresenter!");
+        public MainMenuPresenter(INetworkService networkService, UIDocument uiDocument) {
+            _networkService = networkService;
+            _uiDocument = uiDocument;
+        }
+
+        public void Start() {
+            var root = _uiDocument.rootVisualElement;
+            _btnJoin = root.Q<Button>("btn-join");
+            var statusLabel = root.Q<Label>("status-label");
+
+            if (_btnJoin == null) {
                 return;
             }
 
-            _btnJoin.clicked += () => _networkService.StartGame(Fusion.GameMode.AutoHostOrClient);
+            _btnJoin.clicked += OnJoinClicked;
 
             _networkService.ConnectionStatus
-                .Subscribe(status => Debug.Log($"Status: {status}"))
+                .Subscribe(status => {
+                    if (statusLabel != null) {
+                        statusLabel.text = status;
+                    }
+
+                    _btnJoin.SetEnabled(status is not "Connecting..." and not "Connected");
+                })
                 .AddTo(_disposables);
         }
 
-        private void OnDestroy() => _disposables.Dispose();
+        private void OnJoinClicked() {
+            _btnJoin.SetEnabled(false);
+            _networkService.StartGame(GameMode.AutoHostOrClient);
+        }
+
+        public void Dispose() {
+            _disposables.Dispose();
+            if (_btnJoin != null) {
+                _btnJoin.clicked -= OnJoinClicked;
+            }
+        }
     }
 }

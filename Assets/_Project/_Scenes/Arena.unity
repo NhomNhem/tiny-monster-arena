@@ -161,6 +161,7 @@ GameObject:
   - component: {fileID: 397917237}
   - component: {fileID: 397917236}
   - component: {fileID: 397917238}
+  - component: {fileID: 397917239}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -277,6 +278,22 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &397917239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397917235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d73b0a95be81246699cf0d9ecdc01863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Unity::Fusion.EnableOnSingleRunner
+  PreferredRunner: 0
+  Components:
+  - {fileID: 397917236}
+  _guid: f3977ae4-3049-4d82-8f8b-13a2a4b7e215
 --- !u!1 &455376656
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,6 +546,7 @@ GameObject:
   - component: {fileID: 1415922960}
   - component: {fileID: 1415922959}
   - component: {fileID: 1415922958}
+  - component: {fileID: 1415922961}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -610,6 +628,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1415922961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415922957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d73b0a95be81246699cf0d9ecdc01863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Unity::Fusion.EnableOnSingleRunner
+  PreferredRunner: 0
+  Components:
+  - {fileID: 1415922959}
+  - {fileID: 1415922958}
+  _guid: 1949f8c6-a8e5-47b8-9c47-779ed357b6e7
 --- !u!1 &1927780627
 GameObject:
   m_ObjectHideFlags: 0

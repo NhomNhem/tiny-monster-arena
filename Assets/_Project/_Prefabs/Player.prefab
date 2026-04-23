@@ -30,9 +30,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5786550968511353636}
-  - {fileID: 4565579322321427819}
   - {fileID: 8929821982892404352}
+  - {fileID: 4565579322321427819}
   - {fileID: 5519997185056896311}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -51,14 +50,9 @@ MonoBehaviour:
   SortKey: 1213761793
   ObjectInterest: 1
   Flags: 262145
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 7856253712230014183}
-  - {fileID: 8176705614008103114}
-  - {fileID: 8144166274156902045}
-  - {fileID: 2386236398469925124}
-  - {fileID: 259849864108240615}
-  - {fileID: 8026500796114038063}
+  NestedObjects:
+  - {fileID: 8032175781351686115}
+  NetworkedBehaviours: []
   ForceRemoteRenderTimeframe: 0
 --- !u!1 &3158366766072131386
 GameObject:
@@ -160,6 +154,8 @@ GameObject:
   - component: {fileID: 259849864108240615}
   - component: {fileID: 4866617559123919613}
   - component: {fileID: 8026500796114038063}
+  - component: {fileID: 612345678901234567}
+  - component: {fileID: 8032175781351686115}
   m_Layer: 0
   m_Name: '[Network Layer]'
   m_TagString: Untagged
@@ -179,7 +175,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5786550968511353636}
   m_Father: {fileID: 5217277675744478288}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &259849864108240615
@@ -196,6 +193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: TinyMonsterArena.Infrastructure::TinyMonsterArena.Infrastructure.Network.Fusion.Player.PlayerNetwork
   KCC: {fileID: 8026500796114038063}
   PlayerView: {fileID: 2159470613873650333}
+  _moveSpeed: 5
   IdleState: {fileID: 8144166274156902045}
   MoveState: {fileID: 2386236398469925124}
   AttackState: {fileID: 8176705614008103114}
@@ -255,7 +253,8 @@ MonoBehaviour:
     ProxyInterpolationMode: 0
     ForcePredictedLookRotation: 0
     AllowClientTeleports: 0
-    Processors: []
+    Processors:
+    - {fileID: 612345678901234567}
     MaxPenetrationSteps: 8
     CCDRadiusMultiplier: 0.75
     AntiJitterDistance: {x: 0.025, y: 0.01}
@@ -264,6 +263,53 @@ MonoBehaviour:
     CompressNetworkPosition: 0
     ForceSingleOverlapQuery: 0
     SuppressConvexMeshColliders: 0
+--- !u!114 &612345678901234567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130962779918142938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 264c0f9c9a7bf4a4a927334fa1712bf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KinematicSpeed: 8
+  JumpMultiplier: 2
+  Gravity: {x: 0, y: -40, z: 0}
+  RelativePriority: 0
+  MaxGroundAngle: 60
+  DynamicGroundFriction: 20
+  KinematicGroundAcceleration: 50
+  KinematicGroundFriction: 35
+  DynamicAirFriction: 2
+  KinematicAirAcceleration: 5
+  KinematicAirFriction: 2
+--- !u!114 &8032175781351686115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130962779918142938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 4226848080
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 259849864108240615}
+  - {fileID: 8026500796114038063}
+  - {fileID: 7856253712230014183}
+  - {fileID: 8176705614008103114}
+  - {fileID: 8144166274156902045}
+  - {fileID: 2386236398469925124}
+  ForceRemoteRenderTimeframe: 0
 --- !u!1 &8272263957540653040
 GameObject:
   m_ObjectHideFlags: 0
@@ -290,14 +336,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8272263957540653040}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6001933319980653906}
   - {fileID: 4873931243204880690}
-  m_Father: {fileID: 5217277675744478288}
+  m_Father: {fileID: 4565579322321427819}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2159470613873650333
 MonoBehaviour:
@@ -372,8 +418,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: TinyMonsterArena.Infrastructure::TinyMonsterArena.Infrastructure.Network.Fusion.Player.States.AttackState
   _priority: 0
   _checkPriorityOnExit: 1
-  _totalDuration: 0.6
-  _hitActiveTime: 0.2
+  _totalDuration: 0.35
+  _hitActiveTime: 0.1
 --- !u!114 &8144166274156902045
 MonoBehaviour:
   m_ObjectHideFlags: 0

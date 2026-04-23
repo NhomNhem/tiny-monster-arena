@@ -166,7 +166,9 @@ namespace Fusion.Addons.FSM
 		{
 			_stateMachines.Clear();
 
-			var owners = GetComponentsInChildren<IStateMachineOwner>(true);
+			// Search from the spawned object root so owners can live on sibling branches
+			// such as a separate [Network Layer] under the same player prefab.
+			var owners = transform.root.GetComponentsInChildren<IStateMachineOwner>(true);
 			var tempMachines = ListPool.Get<IStateMachine>(32);
 
 			for (int i = 0; i < owners.Length; i++)

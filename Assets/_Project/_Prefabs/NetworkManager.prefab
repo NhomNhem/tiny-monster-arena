@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b821640c74c49d291f1f9abff420a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: TinyMonsterArena.Infrastructure::TinyMonsterArena.Infrastructure.Network.Fusion.FusionLauncher
-  _sceneManager: {fileID: 5740879655014766038}
 --- !u!114 &5740879655014766038
 MonoBehaviour:
   m_ObjectHideFlags: 0

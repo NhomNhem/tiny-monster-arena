@@ -10,14 +10,37 @@ namespace TinyMonsterArena.Presentation.Player {
         private static readonly int DieHash = Animator.StringToHash("Die");
         
         private void Awake() {
-            _animator = GetComponent<Animator>();
+            _animator = GetComponentInChildren<Animator>(true);
         }
         
-        public void PlayIdle() => _animator.SetFloat(MoveSpeedHash, 0f);
-        public void PlayRun() => _animator.SetFloat(MoveSpeedHash, 1f);
+        public void SetLocomotion(bool isMoving) {
+            if (_animator != null) {
+                _animator.SetFloat(MoveSpeedHash, isMoving ? 1f : 0f);
+            }
+        }
+
+        public void PlayIdle() {
+            SetLocomotion(false);
+        }
+
+        public void PlayRun() {
+            SetLocomotion(true);
+        }
         
-        public void PlayerDeath() => _animator.SetTrigger(DieHash);
+        public void PlayerDeath() {
+            if (_animator != null) {
+                _animator.SetTrigger(DieHash);
+            }
+        }
         
-        public void PlayAttack() => _animator.SetTrigger(AttackHash);
+        public void TriggerAttack() {
+            if (_animator != null) {
+                _animator.SetTrigger(AttackHash);
+            }
+        }
+
+        public void PlayAttack() {
+            TriggerAttack();
+        }
     }
 }

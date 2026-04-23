@@ -1,4 +1,4 @@
-﻿# AGENTS.md
+# AGENTS.md
 
 ## Tiny Monster Arena – AI Agent Guide
 
@@ -49,7 +49,55 @@ This document summarizes essential architecture, workflows, and conventions for 
 - `_Project/Shared/Audio/AudioType.cs` – Audio enums
 - `Docs/tiny_monster_arena_gdd_final.md` – High-level design and architecture rationale
 
----
+### 6. Build, Test, and Lint Commands
+- **Build:** Standard Unity Editor build process. Use File > Build Settings.
+- **Test:** No custom test scripts found. Use Unity Test Runner (Window > General > Test Runner) for EditMode and PlayMode tests.
+- **Lint:** No automated linting tools configured. Follow code style guidelines below.
+- **Run Single Test:** In Test Runner, select specific test and click "Run Selected".
 
-For more, see [Docs/tiny_monster_arena_gdd_final.md] for the full GDD and rationale behind architectural choices.
+### 7. Code Style Guidelines
+#### Imports & Formatting
+- **File-scoped namespaces** (C# 10+) used exclusively
+- **Import order:** Project namespaces → External libraries → System namespaces → Unity namespaces
+- **No #region directives** used in codebase
+- **K&R brace style**: Opening braces on same line as declaration
+- **4-space indentation** (Visual Studio default)
 
+#### Naming Conventions
+- **Classes:** PascalCase (`PlayerEntity`, `FusionLauncher`)
+- **Interfaces:** PascalCase with "I" prefix (`IAudioService`, `INetworkService`)
+- **Fields:** camelCase with `_` prefix (`_runner`, `_status`)
+- **Properties:** PascalCase (`Health`, `IsDead`)
+- **Methods:** PascalCase (`PlaySFX()`, `TakeDamage()`)
+- **Enums:** Singular names (`AudioType`), PascalCase values with underscores (`AudioKey.UI_Click`)
+- **Variables:** camelCase (`playerCount`, `isConnected`)
+
+#### Types & Structure
+- **Value objects/small data:** Use `struct` with `readonly` modifiers
+- **Entities/larger objects:** Use `class`
+- **Interfaces** placed in `Application/Services/Interfaces/`
+- **Implementations** placed in `Infrastructure/` layer
+- **Null handling:** Use nullable types (`Vector3?`) and null-conditional checks
+- **Error handling:** Try-catch blocks (no Result type pattern observed)
+
+#### Async & Reactive Patterns
+- **UniTask** available for asynchronous operations
+- **async void** used for Unity event handlers (fire-and-forget)
+- **R3 Observable** for reactive programming patterns
+- **Observable.Timer** for delayed actions with disposables
+
+#### DI & Service Patterns
+- **VContainer** for dependency injection
+- **LifetimeScope** classes in `_Project/Composition/Scopes/`
+- **Constructor injection** for service dependencies
+- **Marker interfaces** for scope control (`IProjectScope`, `IGameplayScope`, etc.)
+
+#### Comments & Documentation
+- **XML Documentation Comments** (`///`) on public interface members
+- **Inline comments** (`//`) for implementation notes
+- **No trailing whitespace**; keep lines under 120 characters when possible
+
+### 8. Architecture Notes
+All services follow dependency injection through VContainer. No service locators or singletons are used. Networking follows host-authority model with client prediction. UI uses reactive programming with R3 for event flows and DOTween for animations.
+
+See [Docs/tiny_monster_arena_gdd_final.md] for complete design rationale.

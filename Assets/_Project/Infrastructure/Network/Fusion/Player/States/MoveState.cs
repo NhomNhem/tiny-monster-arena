@@ -6,31 +6,45 @@ namespace TinyMonsterArena.Infrastructure.Network.Fusion.Player.States {
         private PlayerNetwork _player;
 
         protected override void OnInitialize() {
-            _player = GetComponentInParent<PlayerNetwork>();
+            _player = transform.root.GetComponentInChildren<PlayerNetwork>(true);
+        }
+
+        protected override void OnEnterState() {
+            _player.SetLocomotionMode(PlayerLocomotionMode.Moving);
+            _player.SetActionPhase(PlayerActionPhase.None);
         }
 
         protected override void OnFixedUpdate() {
-            var input = _player.Input;
-
-            if (input.Move == Vector2.zero) {
-                Machine.TryActivateState(_player.IdleState.StateId);
+            if (_player == null) {
                 return;
             }
 
-            // Xử lý di chuyển KCC
-            Vector3 moveDir = new Vector3(input.Move.x, 0, input.Move.y);
+            if (!_player.HasMoveIntent) {
+                _player.SetLocomotionMode(PlayerLocomotionMode.Idle);
+                _player.KCC.SetInputDirection(Vector3.zero);
+                _player.KCC.SetKinematicVelocity(Vector3.zero);
+                if (!Machine.TryActivateState(_player.IdleState.StateId)) {
+                    _player.LogStateTransitionFailure(nameof(MoveState), nameof(IdleState), "Move intent ended.");
+                }
+                return;
+            }
+
+            _player.SetLocomotionMode(PlayerLocomotionMode.Moving);
+
+            Vector3 moveDir = _player.MoveDirection;
             _player.KCC.SetInputDirection(moveDir);
-            
-            // Xoay nhân vật (Advanced KCC hỗ trợ SetLookRotation)
+            _player.KCC.SetKinematicVelocity(moveDir * _player.MoveSpeed);
             _player.KCC.SetLookRotation(Quaternion.LookRotation(moveDir));
 
-            if (input.Attack) {
-                Machine.TryActivateState(_player.AttackState.StateId);
+            if (_player.TryConsumeBufferedAttack() && !Machine.TryActivateState(_player.AttackState.StateId)) {
+                _player.LogStateTransitionFailure(nameof(MoveState), nameof(AttackState), "Buffered attack should interrupt locomotion.");
             }
         }
 
-        protected override void OnEnterStateRender() {
-            _player.PlayerView.PlayRun();
+        protected override void OnRender() {
+            if (_player?.PlayerView != null) {
+                _player.PlayerView.SetLocomotion(true);
+            }
         }
     }
 }

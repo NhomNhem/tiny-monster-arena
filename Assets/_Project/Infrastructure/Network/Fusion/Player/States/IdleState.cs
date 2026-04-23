@@ -6,38 +6,44 @@ namespace TinyMonsterArena.Infrastructure.Network.Fusion.Player.States {
         private PlayerNetwork _player;
 
         protected override void OnInitialize() {
-            // Lấy ref từ cha (PlayerNetwork)
-            _player = GetComponentInParent<PlayerNetwork>();
+            _player = transform.root.GetComponentInChildren<PlayerNetwork>(true);
         }
 
         protected override void OnEnterState() {
-            // Khi đứng yên, ta triệt tiêu hướng di chuyển của KCC
-            if (_player.KCC != null) {
+            _player.SetLocomotionMode(PlayerLocomotionMode.Idle);
+            _player.SetActionPhase(PlayerActionPhase.None);
+
+            if (_player?.KCC != null) {
                 _player.KCC.SetInputDirection(Vector3.zero);
+                _player.KCC.SetKinematicVelocity(Vector3.zero);
             }
         }
 
         protected override void OnFixedUpdate() {
+            if (_player == null) {
+                return;
+            }
+
             var input = _player.Input;
 
-            // 1. Ưu tiên chuyển sang Attack nếu có input
-            if (input.Attack) {
+            if (_player.TryConsumeBufferedAttack()) {
                 if (Machine.TryActivateState(_player.AttackState.StateId)) {
                     return;
                 }
+
+                _player.LogStateTransitionFailure(nameof(IdleState), nameof(AttackState), "Buffered attack was available.");
             }
 
-            // 2. Chuyển sang Move nếu có di chuyển
-            // Chúng ta dùng một khoảng epsilon nhỏ để tránh nhiễu joystick
             if (input.Move.sqrMagnitude > 0.01f) {
-                Machine.TryActivateState(_player.MoveState.StateId);
+                if (!Machine.TryActivateState(_player.MoveState.StateId)) {
+                    _player.LogStateTransitionFailure(nameof(IdleState), nameof(MoveState), "Move intent should activate locomotion.");
+                }
             }
         }
 
-        protected override void OnEnterStateRender() {
-            // Thực thi animation Idle thông qua View
-            if (_player.PlayerView != null) {
-                _player.PlayerView.PlayIdle();
+        protected override void OnRender() {
+            if (_player?.PlayerView != null) {
+                _player.PlayerView.SetLocomotion(false);
             }
         }
     }

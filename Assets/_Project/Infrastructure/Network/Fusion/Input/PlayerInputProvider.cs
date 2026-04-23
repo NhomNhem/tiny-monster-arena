@@ -6,12 +6,44 @@ using TinyMonsterArena.Infrastructure.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using VContainer;
+
 namespace TinyMonsterArena.Infrastructure.Network.Fusion.Input {
     public class PlayerInputProvider : MonoBehaviour, INetworkRunnerCallbacks {
         private InputReader _inputReader;
+        private FusionLauncher _launcher;
+        private NetworkRunner _registeredRunner;
+        private bool _isSubscribedToLauncher;
+
+        [Inject]
+        public void Construct(FusionLauncher launcher) {
+            _launcher = launcher;
+        }
 
         private void Awake() {
             _inputReader = GetComponent<InputReader>();
+        }
+
+        private void Start() {
+            TryResolveLauncherAndRegister();
+        }
+
+        private void Update() {
+            if (_registeredRunner == null) {
+                TryResolveLauncherAndRegister();
+            }
+        }
+
+        private void OnDestroy() {
+            if (_launcher != null && _isSubscribedToLauncher) {
+                _launcher.RunnerInitialized -= OnRunnerInitialized;
+                _isSubscribedToLauncher = false;
+            }
+
+            if (_registeredRunner != null) {
+                _registeredRunner.RemoveCallbacks(this);
+                _registeredRunner = null;
+            }
         }
 
         public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
@@ -34,7 +66,7 @@ namespace TinyMonsterArena.Infrastructure.Network.Fusion.Input {
         public void OnInput(NetworkRunner runner, NetworkInput input) {
             var data = new NetworkInputData() {
                 Move = _inputReader.Move,
-                Attack = _inputReader.Attack
+                Attack = _inputReader.ConsumeAttack()
             };
 
             input.Set(data);
@@ -53,6 +85,40 @@ namespace TinyMonsterArena.Infrastructure.Network.Fusion.Input {
         public void OnSceneLoadDone(NetworkRunner runner) {
         }
         public void OnSceneLoadStart(NetworkRunner runner) {
+        }
+
+        private void OnRunnerInitialized(NetworkRunner runner) {
+            TryRegisterCallbacks(runner);
+        }
+
+        private void TryResolveLauncherAndRegister() {
+            if (_launcher == null) {
+                _launcher = FindFirstObjectByType<FusionLauncher>(FindObjectsInactive.Include);
+            }
+
+            if (_launcher == null) {
+                return;
+            }
+
+            if (!_isSubscribedToLauncher) {
+                _launcher.RunnerInitialized += OnRunnerInitialized;
+                _isSubscribedToLauncher = true;
+            }
+
+            TryRegisterCallbacks(_launcher.Runner);
+        }
+
+        private void TryRegisterCallbacks(NetworkRunner runner) {
+            if (runner == null || ReferenceEquals(_registeredRunner, runner)) {
+                return;
+            }
+
+            if (_registeredRunner != null) {
+                _registeredRunner.RemoveCallbacks(this);
+            }
+
+            runner.AddCallbacks(this);
+            _registeredRunner = runner;
         }
     }
     
